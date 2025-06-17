@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Cek Status Gizi mu ! Kalkulator BMI & BBI</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f9ff;
+      padding: 20px;
+    }
+
+    .container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    input, select {
+      width: 80%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #hasil {
+      margin-top: 20px;
+    }
+
+    #gambar-ilustrasi {
+      max-width: 80%;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .watermark {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    .byline {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .whatsapp-button {
+      margin-top: 15px;
+      background-color: #25D366;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 10px;
+      text-decoration: none;
+      display: inline-block;
+      font-weight: bold;
+    }
+
+    .whatsapp-button:hover {
+      background-color: #1ebe5d;
+    }
+  </style>
+</head>
+<body>
+  <h1>Kalkulator BMI & BBI</h1>
+  <div class="container">
+    <p>Masukkan data Anda:</p>
+    <input type="number" id="berat" placeholder="Berat badan (kg)" step="0.1"><br>
+    <input type="number" id="tinggi" placeholder="Tinggi badan (cm)" step="0.1"><br>
+    <select id="jenis-kelamin">
+      <option value="pria">Pria</option>
+      <option value="wanita">Wanita</option>
+    </select><br>
+    <button onclick="hitung()">Hitung</button>
+
+    <div id="hasil">
+      <p id="hasil-teks"></p>
+      <img id="gambar-ilustrasi" src="" alt="Ilustrasi tubuh">
+      <p class="byline">by: Nurul H. Nasiha, S.Gz., Dietisien</p>
+      <!-- Tombol WhatsApp -->
+      <a id="wa-link" class="whatsapp-button" href="#" target="_blank" style="display: none;">
+        Konsultasi via WhatsApp
+      </a>
+    </div>
+
+    <div class="watermark">@yaya_elhida</div>
+  </div>
+
+  <script>
+    function hitung() {
+      const berat = parseFloat(document.getElementById("berat").value);
+      const tinggiCm = parseFloat(document.getElementById("tinggi").value);
+      const tinggiM = tinggiCm / 100;
+      const jk = document.getElementById("jenis-kelamin").value;
+
+      if (isNaN(berat) || isNaN(tinggiM) || tinggiM <= 0) {
+        alert("Mohon isi berat dan tinggi dengan benar.");
+        return;
+      }
+
+      // Hitung BMI
+      const bmi = berat / (tinggiM * tinggiM);
+
+      // Hitung BBI (Broca)
+      let bbi;
+      if (jk === "pria") {
+        bbi = (tinggiCm - 100) - (0.1 * (tinggiCm - 100));
+      } else {
+        bbi = (tinggiCm - 100) - (0.15 * (tinggiCm - 100));
+      }
+
+      tampilkanHasil(bmi, bbi);
+    }
+
+    function tampilkanHasil(bmi, bbi) {
+      const hasilTeks = document.getElementById("hasil-teks");
+      const gambarIlustrasi = document.getElementById("gambar-ilustrasi");
+      const waLink = document.getElementById("wa-link");
+
+      let status = "";
+      let gambar = "";
+
+      if (bmi < 18.5) {
+        status = "Kurus";
+        gambar = "kurus.png";
+      } else if (bmi >= 18.5 && bmi < 25) {
+        status = "Normal";
+        gambar = "normal.png";
+      } else if (bmi >= 25 && bmi < 30) {
+        status = "Gemuk";
+        gambar = "gemuk.png";
+      } else {
+        status = "Obesitas";
+        gambar = "obesitas.png";
+      }
+
+      hasilTeks.innerHTML = `
+        <strong>BMI Anda:</strong> ${bmi.toFixed(1)}<br>
+        <strong>Status Gizi:</strong> ${status}<br>
+        <strong>Berat Badan Ideal (BBI):</strong> ${bbi.toFixed(1)} kg
+      `;
+
+      gambarIlustrasi.src = gambar;
+      gambarIlustrasi.style.display = "block";
+
+      // Ganti nomor di bawah dengan nomor WhatsApp Anda
+      const nomorWa = "6285701266553"; // GANTI DENGAN NOMOR AKTUAL TANPA +
+      const pesan = encodeURIComponent(`Halo Kak Nurul, saya sudah cek BMI saya (${bmi.toFixed(1)}) dengan status gizi: ${status}. Boleh konsultasi lebih lanjut untuk program diet?`);
+      waLink.href = `https://wa.me/${nomorWa}?text=${pesan}`;
+      waLink.style.display = "inline-block";
+    }
+  </script>
+</body>
+</html>
