@@ -6,13 +6,13 @@
   <title>Cek Status Gizi mu! Kalkulator BMI & BBI</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: Arial, serif;
       text-align: center;
       background-color: #f4f9ff;
       padding: 20px;
     }
     .container {
-      background-color: white;
+      background-color: baby skyblue;
       padding: 20px;
       border-radius: 15px;
       max-width: 500px;
@@ -84,13 +84,19 @@
 </head>
 <body>
   <h1>Kalkulator BMI & BBI</h1>
-  <div class="container">
+  <div class="container" id="capture-area">
     <p>Masukkan data Anda:</p>
     <input type="number" id="berat" placeholder="Berat badan (kg)" step="0.1"><br>
     <input type="number" id="tinggi" placeholder="Tinggi badan (cm)" step="0.1"><br>
     <select id="jenis-kelamin">
       <option value="pria">Pria</option>
       <option value="wanita">Wanita</option>
+    </select><br>
+    <select id="aktivitas">
+      <option value="badrest">Aktivitas Fisik Bedrest</option>
+      <option value="rendah">Aktivitas Fisik Rendah</option>
+      <option value="sedang">Aktivitas Fisik Sedang</option>
+      <option value="tinggi">Aktivitas Fisik Tinggi</option>
     </select><br>
     <button onclick="hitung()">Hitung</button>
 
@@ -109,15 +115,18 @@
       </a>
     </div>
 
+    <button onclick="downloadAsImage()" style="margin-top: 20px; background-color: #2d3436;">Simpan sebagai Gambar</button>
     <div class="watermark">@yaya_elhida</div>
   </div>
 
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
   <script>
     function hitung() {
       const berat = parseFloat(document.getElementById("berat").value);
       const tinggiCm = parseFloat(document.getElementById("tinggi").value);
       const tinggiM = tinggiCm / 100;
       const jk = document.getElementById("jenis-kelamin").value;
+      const aktivitas = document.getElementById("aktivitas").value;
 
       if (isNaN(berat) || isNaN(tinggiM) || tinggiM <= 0) {
         alert("Mohon isi berat dan tinggi dengan benar.");
@@ -129,10 +138,10 @@
       const bbiMin = 18.5 * (tinggiM * tinggiM);
       const bbiMax = 24.9 * (tinggiM * tinggiM);
 
-      tampilkanHasil(bmi, bbi, bbiMin, bbiMax);
+      tampilkanHasil(bmi, bbi, bbiMin, bbiMax, aktivitas);
     }
 
-    function tampilkanHasil(bmi, bbi, bbiMin, bbiMax) {
+    function tampilkanHasil(bmi, bbi, bbiMin, bbiMax, aktivitas) {
       const hasilTeks = document.getElementById("hasil-teks");
       const gambarIlustrasi = document.getElementById("gambar-ilustrasi");
       const waLink = document.getElementById("wa-link");
@@ -149,7 +158,7 @@
         status = "Kurus 😟";
         gambar = "kurus.png";
         warna = "kurus";
-        tipGizi = "Perbanyak makanan bergizi tinggi dan cek kesehatan jika perlu.";
+        tipGizi = "Penuhi asupan zat gizi mu, dan tambah dengan olahraga ya! gunakan 'Isi Piringku Model Y";
       } else if (bmi >= 18.5 && bmi < 25) {
         status = "Normal 😊";
         gambar = "normal.png";
@@ -159,21 +168,23 @@
         status = "Gemuk 😬";
         gambar = "gemuk.png";
         warna = "gemuk";
-        tipGizi = "Kurangi kalori, tambah aktivitas fisik, dan jaga pola makan.";
+        tipGizi = "Lakukan defisit kalori, tingkatkan aktifitas fisik, dan gunakan 'Isi Piringku Model T'";
       } else {
         status = "Obesitas 😟";
         gambar = "obesitas.png";
         warna = "obesitas";
-        tipGizi = "Segera ubah gaya hidup dan pertimbangkan konsultasi gizi.";
+        tipGizi = "Segera ubah gaya hidup ! gunakan 'Isi Piringku Model T' dan pertimbangkan konsultasi gizi.";
       }
 
+     
       statusBox.className = `status-box ${warna}`;
       statusBox.innerHTML = `Status Gizi: ${status}`;
 
       hasilTeks.innerHTML = `
-        <p><strong>BMI Anda:</strong> ${bmi.toFixed(1)}</p>
+        <p><strong>BMI Anda:</strong> ${bmi.toFixed(1)} kg/m2</p>
         <p><strong>Range BB Normal (18.5–24.9 BMI):</strong> ${bbiMin.toFixed(1)} kg - ${bbiMax.toFixed(1)} kg</p>
         <p><strong>Berat Badan Ideal (BBI):</strong> ${bbi.toFixed(1)} kg</p>
+      
       `;
 
       gambarIlustrasi.src = gambar;
@@ -186,9 +197,18 @@
       waLink.href = `https://wa.me/${nomorWa}?text=${pesan}`;
       waLink.style.display = "inline-block";
 
-      const pesanIG = encodeURIComponent(`Cek BMI-ku: ${bmi.toFixed(1)} (${status}). Yuk cek juga di: [link website kamu]`);
+      const pesanIG = encodeURIComponent(`Cek BMI-ku: ${bmi.toFixed(1)} (${status}). Yuk cek juga di: https://fitdojo.id/kalkulator-bmi-bbi`);
       igLink.href = `https://www.instagram.com/?text=${pesanIG}`;
       igLink.style.display = "inline-block";
+    }
+
+    function downloadAsImage() {
+      html2canvas(document.getElementById("capture-area")).then(function(canvas) {
+        const link = document.createElement("a");
+        link.download = "hasil-kalkulator-bmi.png";
+        link.href = canvas.toDataURL();
+        link.click();
+      });
     }
   </script>
 </body>
