@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> Cek Status Gizi mu ! Kalkulator BMI & BBI</title>
+  <title>Cek Status Gizi mu! Kalkulator BMI & BBI</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,9 +11,8 @@
       background-color: #f4f9ff;
       padding: 20px;
     }
-
     .container {
-      background-color: white;
+      background-color: baby blue;
       padding: 20px;
       border-radius: 15px;
       max-width: 500px;
@@ -21,14 +20,12 @@
       box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
       position: relative;
     }
-
     input, select {
       width: 80%;
       padding: 10px;
       margin: 10px 0;
       font-size: 16px;
     }
-
     button {
       padding: 10px 20px;
       font-size: 16px;
@@ -38,17 +35,14 @@
       border-radius: 8px;
       cursor: pointer;
     }
-
     #hasil {
       margin-top: 20px;
     }
-
     #gambar-ilustrasi {
       max-width: 80%;
-      margin-top: 10px;
+      margin: 10px auto;
       display: none;
     }
-
     .watermark {
       position: absolute;
       bottom: 10px;
@@ -56,13 +50,11 @@
       font-size: 12px;
       color: #aaa;
     }
-
     .byline {
       margin-top: 15px;
       font-size: 14px;
       color: #555;
     }
-
     .whatsapp-button {
       margin-top: 15px;
       background-color: #25D366;
@@ -73,10 +65,21 @@
       display: inline-block;
       font-weight: bold;
     }
-
     .whatsapp-button:hover {
       background-color: #1ebe5d;
     }
+    .status-box {
+      padding: 10px;
+      border-radius: 10px;
+      color: white;
+      font-weight: bold;
+      margin: 10px auto;
+      width: 80%;
+    }
+    .kurus { background-color: #5dade2; }
+    .normal { background-color: #2ecc71; }
+    .gemuk { background-color: #f39c12; }
+    .obesitas { background-color: #e74c3c; }
   </style>
 </head>
 <body>
@@ -92,12 +95,17 @@
     <button onclick="hitung()">Hitung</button>
 
     <div id="hasil">
+      <div id="status-box"></div>
       <p id="hasil-teks"></p>
       <img id="gambar-ilustrasi" src="" alt="Ilustrasi tubuh">
+      <p id="tips"></p>
       <p class="byline">by: Nurul H. Nasiha, S.Gz., Dietisien</p>
-      <!-- Tombol WhatsApp -->
       <a id="wa-link" class="whatsapp-button" href="#" target="_blank" style="display: none;">
         Konsultasi via WhatsApp
+      </a>
+      <br>
+      <a id="ig-share" class="whatsapp-button" href="#" target="_blank" style="background-color: #c13584; display: none;">
+        Bagikan ke Instagram
       </a>
     </div>
 
@@ -116,56 +124,71 @@
         return;
       }
 
-      // Hitung BMI
       const bmi = berat / (tinggiM * tinggiM);
+      let bbi = (jk === "pria") ? (tinggiCm - 100 - 0.1 * (tinggiCm - 100)) : (tinggiCm - 100 - 0.15 * (tinggiCm - 100));
+      const bbiMin = 18.5 * (tinggiM * tinggiM);
+      const bbiMax = 24.9 * (tinggiM * tinggiM);
 
-      // Hitung BBI (Broca)
-      let bbi;
-      if (jk === "pria") {
-        bbi = (tinggiCm - 100) - (0.1 * (tinggiCm - 100));
-      } else {
-        bbi = (tinggiCm - 100) - (0.15 * (tinggiCm - 100));
-      }
-
-      tampilkanHasil(bmi, bbi);
+      tampilkanHasil(bmi, bbi, bbiMin, bbiMax);
     }
 
-    function tampilkanHasil(bmi, bbi) {
+    function tampilkanHasil(bmi, bbi, bbiMin, bbiMax) {
       const hasilTeks = document.getElementById("hasil-teks");
       const gambarIlustrasi = document.getElementById("gambar-ilustrasi");
       const waLink = document.getElementById("wa-link");
+      const igLink = document.getElementById("ig-share");
+      const statusBox = document.getElementById("status-box");
+      const tips = document.getElementById("tips");
 
       let status = "";
       let gambar = "";
+      let warna = "";
+      let tipGizi = "";
 
       if (bmi < 18.5) {
-        status = "Kurus";
+        status = "Kurus 😟";
         gambar = "kurus.png";
+        warna = "kurus";
+        tipGizi = "Penuhi asupan zat gizi mu, dan tambah dengan olahraga ya! gunakan 'Isi Piringku Model Y' ";
       } else if (bmi >= 18.5 && bmi < 25) {
-        status = "Normal";
+        status = "Normal 😊";
         gambar = "normal.png";
+        warna = "normal";
+        tipGizi = "Pertahankan pola hidup sehat dan aktif!";
       } else if (bmi >= 25 && bmi < 30) {
-        status = "Gemuk";
+        status = "Gemuk 😬";
         gambar = "gemuk.png";
+        warna = "gemuk";
+        tipGizi = "Lakukan defisit kalori, tingkatkan aktifitas fisik, dan gunakan 'Isi Piringku Model T' ";
       } else {
-        status = "Obesitas";
+        status = "Obesitas 😟";
         gambar = "obesitas.png";
+        warna = "obesitas";
+        tipGizi = "Segera ubah gaya hidup ! gunakan 'Isi Piringku Model T' dan pertimbangkan konsultasi gizi.";
       }
 
+      statusBox.className = `status-box ${warna}`;
+      statusBox.innerHTML = `Status Gizi: ${status}`;
+
       hasilTeks.innerHTML = `
-        <strong>BMI Anda:</strong> ${bmi.toFixed(1)}<br>
-        <strong>Status Gizi:</strong> ${status}<br>
-        <strong>Berat Badan Ideal (BBI):</strong> ${bbi.toFixed(1)} kg
+        <strong>BMI Anda:</strong> ${bmi.toFixed(1)} Kg/m2<br>
+        <strong>Berat Badan Ideal (BBI):</strong> ${bbi.toFixed(1)} kg<br>
+        <strong>Range BB Normal (18.5–24.9 BMI):</strong> ${bbiMin.toFixed(1)} kg - ${bbiMax.toFixed(1)} kg
       `;
 
       gambarIlustrasi.src = gambar;
       gambarIlustrasi.style.display = "block";
 
-      // Ganti nomor di bawah dengan nomor WhatsApp Anda
-      const nomorWa = "6285701266553"; // GANTI DENGAN NOMOR AKTUAL TANPA +
+      tips.innerHTML = `<strong>Tips Gizi:</strong> ${tipGizi}`;
+
+      const nomorWa = "6285701266553";
       const pesan = encodeURIComponent(`Halo Kak Nurul, saya sudah cek BMI saya (${bmi.toFixed(1)}) dengan status gizi: ${status}. Boleh konsultasi lebih lanjut untuk program diet?`);
       waLink.href = `https://wa.me/${nomorWa}?text=${pesan}`;
       waLink.style.display = "inline-block";
+
+      const pesanIG = encodeURIComponent(`Cek BMI-ku: ${bmi.toFixed(1)} (${status}). Yuk cek juga di: [link website kamu]`);
+      igLink.href = `https://www.instagram.com/?text=${pesanIG}`;
+      igLink.style.display = "inline-block";
     }
   </script>
 </body>
