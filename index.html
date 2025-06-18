@@ -12,7 +12,7 @@
       padding: 20px;
     }
     .container {
-      background-color: baby blue;
+      background-color: white;
       padding: 20px;
       border-radius: 15px;
       max-width: 500px;
@@ -149,7 +149,7 @@
         status = "Kurus 😟";
         gambar = "kurus.png";
         warna = "kurus";
-        tipGizi = "Penuhi asupan zat gizi mu, dan tambah dengan olahraga ya! gunakan 'Isi Piringku Model Y' ";
+        tipGizi = "Perbanyak makanan bergizi tinggi dan cek kesehatan jika perlu.";
       } else if (bmi >= 18.5 && bmi < 25) {
         status = "Normal 😊";
         gambar = "normal.png";
@@ -159,12 +159,12 @@
         status = "Gemuk 😬";
         gambar = "gemuk.png";
         warna = "gemuk";
-        tipGizi = "Lakukan defisit kalori, tingkatkan aktifitas fisik, dan gunakan 'Isi Piringku Model T' ";
+        tipGizi = "Kurangi kalori, tambah aktivitas fisik, dan jaga pola makan.";
       } else {
         status = "Obesitas 😟";
         gambar = "obesitas.png";
         warna = "obesitas";
-        tipGizi = "Segera ubah gaya hidup ! gunakan 'Isi Piringku Model T' dan pertimbangkan konsultasi gizi.";
+        tipGizi = "Segera ubah gaya hidup dan pertimbangkan konsultasi gizi.";
       }
 
       statusBox.className = `status-box ${warna}`;
